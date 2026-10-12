@@ -4,6 +4,16 @@
 
 A maintainable Java 21 API automation project demonstrating contract, functional, negative, authentication, query, and simulated CRUD testing against the public [DummyJSON](https://dummyjson.com/docs) practice API.
 
+## Quality evidence at a glance
+
+| Signal | Evidence |
+|---|---|
+| Automated coverage | 27 independent JUnit 5 API tests across six risk areas |
+| CI execution | [GitHub Actions API suite](https://github.com/Korpaks/dummyjson-rest-assured-api-portfolio/actions/workflows/api-tests.yml) |
+| Contract evidence | JSON Schema checks plus AssertJ behavioral assertions |
+| Diagnostics | Surefire XML/text reports, Allure results, and failure-only HTTP logging |
+| Safety | Public demo credentials and simulated writes; no shared data is changed |
+
 ## What this project demonstrates
 
 - 27 independent JUnit 5 tests across products, auth, carts, posts, todos, and platform health
@@ -69,6 +79,22 @@ src/test/resources/
 └── schemas/                      # JSON contract schemas
 ```
 
+## Architecture
+
+```mermaid
+flowchart LR
+    J[JUnit 5 tests] --> B[Base API test]
+    B --> C[Reusable REST Assured client]
+    B --> CFG[Environment-aware configuration]
+    C --> DJ[DummyJSON API]
+    J --> S[JSON Schema validation]
+    J --> A[AssertJ behavioral assertions]
+    J --> SR[Surefire reports]
+    J --> AR[Allure results]
+    SR --> CI[GitHub Actions artifacts]
+    AR --> CI
+```
+
 ## Engineering choices
 
 - **REST Assured + AssertJ:** readable HTTP flows with expressive assertions.
@@ -76,6 +102,14 @@ src/test/resources/
 - **Failure-only logging:** clean successful runs and actionable failure evidence.
 - **Environment overrides:** the same suite can target another compatible environment without source edits.
 - **Safe mutations:** tests exercise write semantics without polluting a real system.
+
+## Known boundaries and tradeoffs
+
+- DummyJSON simulates mutations, so the suite verifies request/response semantics rather than durable database state.
+- Public demo credentials are intentionally used; production authentication and secret-management flows are outside scope.
+- Performance, rate-limit, destructive, and security testing are excluded because the shared public API is not an authorized load or penetration target.
+- Schemas protect stable response contracts without over-constraining volatile catalog values.
+- Allure results are generated in CI, but publishing a permanent Allure site is intentionally avoided to keep the portfolio dependency-light.
 
 ## Responsible use
 
